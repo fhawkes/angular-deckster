@@ -12,8 +12,71 @@ Goals of Angular Deckster:
 2  Give users the ability to drill down from a summary view of the data to a detailed view
 3. Provide users with prepackaged plugins for data visualizations that will reduce development time
 
-Installation
----------------
+##Usage
+
+Here is an example of the default usage:
+
+```html
+  <deckster-deck deck-cards="cards" deck-options="deckOptions"></deckster-deck>
+```
+
+Which expects a scope setup like the following:
+
+``` javascript
+
+    $scope.deckOptions = {
+      gridsterOpts: { // any options that you can set for angular-gridster (see:  http://manifestwebdesign.github.io/angular-gridster/)
+        columns: 5,
+        rowHeight: 150,
+        margins: [10, 10]
+      }
+    };
+
+    $scope.cards = [
+      {
+        title: 'Alerts', // Title of the card
+        size: {x: 1, y: 3}, // Size of the card x being the number columns in deck and y being the number of rows in the deck
+        position: [0, 0] // The position of the card in the deck [row, column]
+      },
+      {
+        title: 'Events',
+        size: {x: 1, y: 3},
+        position: [3, 0]
+      },
+      {
+        title: 'Link Analysis',
+        size: {x: 2, y: 4},
+        position: [0, 2]
+      },
+      {
+        title: 'Node Details',
+        size: {x: 1, y: 4},
+        position: [0, 4]
+      },
+      {
+        title: 'Timeline',
+        size: {x: 3, y: 2},
+        position: [4, 2]
+      },
+      {
+        title: 'Network Health',
+        size: {x: 1, y: 2},
+        position: [2, 1]
+      },
+      {
+        title: 'Geospatial',
+        size: {x: 1, y: 2},
+        position: [4, 1]
+      },
+      {
+        title: 'Query Builder',
+        size: {x: 1, y: 2},
+        position: [0, 1]
+      }
+    ];
+```
+
+##Installation
         bower install --save angular-deckster
 
 Then, import the following in your HTML alongside `jQuery` and `angular`:
@@ -29,8 +92,7 @@ Then, import the following in your HTML alongside `jQuery` and `angular`:
 *`Note` If you include any of the other card-plugins there maybe additional dependencies required*
 
 
-Contributing
----------------
+##Contributing
 
 If you are interested in contributing to the project here are some steps to help you get going:
 
