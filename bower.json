@@ -1,0 +1,32 @@
+{
+  "name": "angular-deckster",
+  "version": "0.1.0",
+  "authors": [
+    {
+      "name": "Floyd Hawkes",
+      "email": "floydhawkes@gmail.com"
+    }
+  ],
+  "main": [
+    "dist/angular-deckster.js"
+  ],
+  "ignore": [
+    "src",
+    "test",
+    "Gruntfile.js",
+    "**/.*"
+  ],
+  "dependencies": {
+    "angular-gridster": "git://github.com/fhawkes/angular-gridster.git#0.11.7",
+    "angular-bootstrap": "~0.12.0",
+    "bootstrap-css-only": "3.3.2"
+  },
+  "devDependencies": {
+    "angular-mocks": ">=1.2.0",
+    "angular-scenario": ">=1.2.0",
+    "angular": ">=1.2.0",
+    "angular-resource": ">=1.2.0",
+    "angular-sanitize": ">=1.2.0",
+    "jquery": "~2.1.3"
+  }
+}

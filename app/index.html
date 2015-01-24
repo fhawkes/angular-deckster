@@ -1,0 +1,46 @@
+<!doctype html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <title>Angular Deckster</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../bower/bootstrap-css-only/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bower/angular-gridster/dist/angular-gridster.min.css">
+    <link rel="stylesheet" href="../dist/angular-deckster.css">
+    <link rel="stylesheet" href="styles/main.css">
+  </head>
+  <body ng-app="decksterTestApp">
+
+    <div>
+      <div class="header">
+        <ul class="nav nav-pills pull-right">
+          <li class="active"><a ng-href="index.html">Home</a></li>
+        </ul>
+        <h3 class="text-muted">Angular Deckster Test App</h3>
+      </div>
+      <script type="text/ng-template" id="testSummaryTemplate.html">
+          <div>This is custom summary template should do cool things</div>
+      </script>
+      <div ng-view ng-controller="TestController">
+          <div ng-controller="TestController">
+              <deckster-deck deck-cards="cards" deck-options="testDeckOptions"></deckster-deck>
+          </div>
+
+      </div>
+
+      <div class="footer">
+        <p><span class="glyphicon glyphicon-heart"></span> from the Angular Deckster team</p>
+      </div>
+    </div>
+    <script src="../bower/jquery/dist/jquery.js"></script>
+    <script src="../bower/angular/angular.js"></script>
+    <script src="../bower/angular-resource/angular-resource.js"></script>
+    <script src="../bower/angular-sanitize/angular-sanitize.js"></script>
+    <script src="../bower/angular-gridster/src/angular-gridster.js"></script>
+    <script src="../dist/angular-deckster.js"></script>
+    <script src="scripts/app.js"></script>
+</body>
+</html>
