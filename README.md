@@ -1,50 +1,59 @@
-Node Boilerplate Version 2
+Angular Deckster
 ==========================
-*Requires Node v0.6.6 (or newer)*
-node-boilerplate takes html-boilerplate, express, connect, jade and Socket.IO and organizes them into a ready to use website project. It's a fast way to get working on your Node website without having to worry about the setup. It takes care of all the boring parts, like setting up your views, 404 page, 500 page, getting the modules organized, etc... 
+Angular Deckster is a AngularJS plugin that uses [angular-gridster](http://manifestwebdesign.github.io/angular-gridster/) under the hood to allow a user to quickly bootstrap interactive dashboards.
 
-Node Boilerplate has 4 goals:
-
-1. To end the repetition involved with starting a new Node website project
-2. To never install anything outside of the project directory (For easier production deployment)
-3. To make it easy to install additional modules within the project directory
-4. To enable easy upgrade or freezing of project dependencies  
-(These goals are much easier to meet now that node includes the node_modules convention)
-
-To start a project:
-		
-		git clone git://github.com/robrighter/node-boilerplate.git mynewproject
-		cd mynewproject
-		./initproject.sh
-This will copy down all of the boilerplate files, organize them appropriately and init a fresh new git repository within which you can build your next big thing.
+Think of Angular Deckster as a deck of cards. The deck is the dashboard and the widgets on the dashboard are the cards. Just like a deck of cards you can shuffle
+the cards around in the deck by dragging or resizing them.
 
 
-To run the boilerplate template app:
+Goals of Angular Deckster:
 
-		node server.js
+1. Allow users to quickly build dashboards in any application with AngularJS
+2  Give users the ability to drill down from a summary view of the data to a detailed view
+3. Provide users with prepackaged plugins for data visualizations that will reduce development time
 
-Go to http://0.0.0.0:8081 and click on the send message link to see socket.io in action.
+Installation
+---------------
+        bower install --save angular-deckster
+
+Then, import the following in your HTML alongside `jQuery` and `angular`:
+```html
+  <link rel="stylesheet" href="bower_components/bootstrap-css-only/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="bower_components/angular-gridster/dist/angular-gridster.min.css" />
+  <link rel="stylesheet" href="bower_components/angular-deckster/dist/angular-deckster.min.css" />
+  <script src="bower_components/javascript-detect-element-resize/jquery.resize.js"></script>
+  <script src="bower_components/angular-gridster/dist/angular-gridster.min.js"></script>
+  <script src="bower_components/angular-deckster/dist/angular-deckster.js"></script>
+```
+
+*`Note` If you include any of the other card-plugins there maybe additional dependencies required*
 
 
-Additional Features:
+Contributing
+---------------
 
-1. Creates a package.json file consistent with associated best practices (http://blog.nodejitsu.com/package-dependencies-done-right)
-2. Adds .gitignore for the node_modules directory
-3. Includes 404 page and associated route
-4. Includes 500 page
+If you are interested in contributing to the project here are some steps to help you get going:
 
-To add additional modules:
+First clone the project from git:
+```bash
+  git clone https://github.com/fhawkes/angular-deckster.git
+```
 
-Update the package.json file to include new module dependencies and run 'npm install'.
+Then install project dependencies:
+```bash
+  npm install
+  bower install
+```
 
-**If you have a different set of default modules that you like to use, the structure is setup such that you can fork the project and replace the module dependencies outlined in the ./templates/apps/package.json file to best fit your needs and the initproject.sh script will initialize projects with your new set of modules.**
+To watch project changes while you are developing
+```bash
+  gulp
+```
 
-Deployment
-===============
+To build the project
+```bash
+  gulp build
+```
 
-node-boilerplate is setup to be easily deployed on a Joyent Node SmartMachine. This means that:
-
-1. The version of Node is defined in config.json and in package.json
-2. The main script to run is server.js
-3. The web server port is pulled from process.env.PORT 
-
+####Style Guide
+Please respect the formatting specified in .editorconfig
