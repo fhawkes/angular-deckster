@@ -1,4 +1,16 @@
-app = angular.module('decksterTestApp', ['angularDeckster']);
+app = angular.module('decksterTestApp', ['ngRoute', 'angularDeckster'])
+.config(['$routeProvider', 'decksterConfigProvider', function($routeProvider, decksterConfigProvider) {
+  $routeProvider.when('/', {
+    templateUrl: 'partials/main.html',
+    controller: 'TestController'
+  });
+
+  decksterConfigProvider.set({
+    popoutTemplates: {
+      'alertsCard': 'testDetailsTemplate.html'
+    }
+  })
+}]);
 
 app.controller('TestController', ['$scope', function($scope) {
   $scope.testDeckOptions = {
@@ -11,6 +23,9 @@ app.controller('TestController', ['$scope', function($scope) {
   $scope.cards = [
     {
       title: 'Alerts',
+      id: 'alertsCard',
+      summaryTemplateUrl: 'testSummaryTemplate.html',
+      detailsTemplateUrl: 'testDetailsTemplate.html',
       size: {x: 1, y: 3},
       position: [0, 0]
     },

@@ -4,7 +4,7 @@
         <div class="deckster-card-controls">
             <span class="deckster-card-control glyphicon glyphicon-refresh" ng-click="reloadCard()"></span>
             <span class="deckster-card-control glyphicon" ng-class="{'glyphicon-resize-full': !expanded, 'glyphicon-resize-small': expanded}" ng-click="expandCard(); toggleView()"></span>
-            <span class="deckster-card-control thin glyphicon glyphicon-new-window" ng-click="popoutCard()"></span>
+            <a class="deckster-card-control thin glyphicon glyphicon-new-window" ng-href="{{card.getPopoutUrl()}}" ng-if="hasPopout()"></a>
         </div>
     </div>
     <div class="deckster-content">

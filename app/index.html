@@ -24,12 +24,10 @@
       <script type="text/ng-template" id="testSummaryTemplate.html">
           <div>This is custom summary template should do cool things</div>
       </script>
-      <div ng-view ng-controller="TestController">
-          <div ng-controller="TestController">
-              <deckster-deck deck-cards="cards" deck-options="testDeckOptions"></deckster-deck>
-          </div>
-
-      </div>
+      <script type="text/ng-template" id="testDetailsTemplate.html">
+        <div>This is custom details template should do cool things</div>
+      </script>
+      <div ng-view=""></div>
 
       <div class="footer">
         <p><span class="glyphicon glyphicon-heart"></span> from the Angular Deckster team</p>
@@ -39,6 +37,7 @@
     <script src="../bower/angular/angular.js"></script>
     <script src="../bower/angular-resource/angular-resource.js"></script>
     <script src="../bower/angular-sanitize/angular-sanitize.js"></script>
+    <script src="../bower/angular-route/angular-route.js"></script>
     <script src="../bower/javascript-detect-element-resize/jquery.resize.js"></script>
     <script src="../bower/angular-gridster/src/angular-gridster.js"></script>
     <script src="../dist/angular-deckster.js"></script>

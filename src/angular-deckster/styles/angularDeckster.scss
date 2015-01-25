@@ -8,6 +8,10 @@
   padding: 10px;
 }
 
+.deckster-popout-content {
+  padding: 15px;
+}
+
 .deckster-card {
   width: 100%;
   height: 100%;
@@ -67,6 +71,7 @@
         -moz-transition: color .3s;
         -o-transition: color .3s;
         transition: color .3s;
+        text-decoration: none;
         &.thin {
           font-weight: 100;
         }

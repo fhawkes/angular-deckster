@@ -13,7 +13,7 @@
   angular.module('angularDeckster.services', []);
   angular.module('angularDeckster.controllers', ['angularDeckster.services']);
 
-  angular.module('angularDeckster',
+  var deckster = angular.module('angularDeckster',
     [
         'angularDeckster.templates',
         'angularDeckster.directives',
@@ -22,14 +22,22 @@
         'angularDeckster.controllers',
         'angularDeckster.config',
         'gridster',
-        'ngResource',  // may not need
-        'ngSanitize'   // may not need
+        'ngRoute'
     ]);
+
+  // Routes
+  deckster.config(['$routeProvider', function($routeProvider) {
+    $routeProvider
+      .when('/deckster/card/:cardId', {
+        templateUrl: '/deckster-popout/popout.html'
+      });
+  }]);
 
   //Config
   angular.module('angularDeckster.config').provider('decksterConfig', function() {
     var options = {
-      basePath: '/deckster'
+      basePath: '/deckster',
+      popoutTemplates: {}
     };
 
     return {

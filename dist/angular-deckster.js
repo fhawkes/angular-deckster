@@ -13,7 +13,7 @@
   angular.module('angularDeckster.services', []);
   angular.module('angularDeckster.controllers', ['angularDeckster.services']);
 
-  angular.module('angularDeckster',
+  var deckster = angular.module('angularDeckster',
     [
         'angularDeckster.templates',
         'angularDeckster.directives',
@@ -22,14 +22,22 @@
         'angularDeckster.controllers',
         'angularDeckster.config',
         'gridster',
-        'ngResource',  // may not need
-        'ngSanitize'   // may not need
+        'ngRoute'
     ]);
+
+  // Routes
+  deckster.config(['$routeProvider', function($routeProvider) {
+    $routeProvider
+      .when('/deckster/card/:cardId', {
+        templateUrl: '/deckster-popout/popout.html'
+      });
+  }]);
 
   //Config
   angular.module('angularDeckster.config').provider('decksterConfig', function() {
     var options = {
-      basePath: '/deckster'
+      basePath: '/deckster',
+      popoutTemplates: {}
     };
 
     return {
@@ -45,7 +53,7 @@
 })(angular);
 
 angular.module('angularDeckster.controllers')
-.controller('decksterCardCtrl', ['$scope', '$compile', '$window', function($scope, $compile, $window) {
+.controller('decksterCardCtrl', ['$scope', '$compile', '$window', 'decksterConfig', function($scope, $compile, $window, decksterConfig) {
   var cardEl = null;
   var summaryLoaded = false;
   var detailsLoaded = false;
@@ -80,6 +88,10 @@ angular.module('angularDeckster.controllers')
 
   $scope.currentDate = function() {
     return Date.now();
+  };
+
+  $scope.hasPopout = function() {
+    return self.hasPopout();
   };
 
   $scope.$on('deckster.cards.refresh', function() {
@@ -150,8 +162,8 @@ angular.module('angularDeckster.controllers')
     $scope.expanded = false;
   };
 
-  self.popoutCard = function() {
-    // TODO implement popout functionality
+  self.hasPopout = function() {
+    return angular.isDefined(decksterConfig.popoutTemplates[$scope.card.id]);
   };
 
   self.reloadCard = function() {
@@ -183,6 +195,12 @@ angular.module('angularDeckster.controllers')
     $scope.$broadcast('deckster.cards.refresh');
   };
 
+}]);
+angular.module('angularDeckster.controllers')
+.controller('decksterPopoutCtrl', ['decksterConfig', function(decksterConfig) {
+  this.getTemplateUrl = function(cardId) {
+    return decksterConfig.popoutTemplates[cardId];
+  };
 }]);
 angular.module('angularDeckster.directives')
 .directive('decksterCard', function() {
@@ -234,12 +252,34 @@ angular.module('angularDeckster.directives')
     }
   };
 }]);
+angular.module('angularDeckster.directives')
+.directive('decksterPopout', ['$routeParams', '$compile', 'Card', function($routeParams, $compile, Card) {
+  return {
+    replace: true,
+    controller: 'decksterPopoutCtrl',
+    template: '<div class="deckster-popout-content"></div>',
+    link: function(scope, element, attrs, decksterPopoutCtrl) {
+      var cardId = $routeParams.cardId;
+
+      if(cardId) {
+        var templateUrl = decksterPopoutCtrl.getTemplateUrl(cardId);
+        var card = new Card({popoutTemplateUrl: templateUrl});
+
+        card.getPopoutContent(function(template) {
+          element.html(template);
+          $compile(element.contents())(scope);
+        });
+      }
+    }
+  };
+}]);
 angular.module('angularDeckster.services')
 .factory('Card', ['$http', '$templateCache', '$q', function($http, $templateCache, $q) {
   var defaultConfig = {
     lazyLoad: true,
     summaryTemplateUrl: '/deckster-card/default-summary.html',
-    detailTemplateUrl: '/deckster-card/default-detail.html'
+    detailTemplateUrl: '/deckster-card/default-detail.html',
+    popoutTemplateUrl: '/deckster-card/default-detail.html'
   };
 
   var fetchPromises = {};  // Promises for content templates
@@ -273,6 +313,16 @@ angular.module('angularDeckster.services')
     });
   };
 
+  /**
+   * Function that returns the html for the popout section of the card
+   * @param cb
+   */
+  Card.prototype.getPopoutContent = function(cb) {
+    fetchTemplate(this.popoutTemplateUrl).then(function(template) {
+      cb && cb(template);
+    });
+  };
+
   Card.prototype.isLazy = function() {
     return this.lazyLoad;
   };
@@ -283,6 +333,10 @@ angular.module('angularDeckster.services')
    */
   Card.prototype.getTitle = function() {
     return this.title || this.id || '';
+  };
+
+  Card.prototype.getPopoutUrl = function() {
+    return '#/deckster/card/' + this.id;
   };
 
   /**
@@ -315,7 +369,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/deckster-card/card.html',
-    '<div class="deckster-card-inner"><div class="deckster-card-header"><div class="deckster-card-title">{{card.getTitle()}}</div><div class="deckster-card-controls"><span class="deckster-card-control glyphicon glyphicon-refresh" ng-click="reloadCard()"></span> <span class="deckster-card-control glyphicon" ng-class="{\'glyphicon-resize-full\': !expanded, \'glyphicon-resize-small\': expanded}" ng-click="expandCard(); toggleView()"></span> <span class="deckster-card-control thin glyphicon glyphicon-new-window" ng-click="popoutCard()"></span></div></div><div class="deckster-content"><div class="deckster-summary" ng-show="currentView === \'summary\'"></div><div class="deckster-detail" ng-show="currentView === \'details\'"></div></div></div>');
+    '<div class="deckster-card-inner"><div class="deckster-card-header"><div class="deckster-card-title">{{card.getTitle()}}</div><div class="deckster-card-controls"><span class="deckster-card-control glyphicon glyphicon-refresh" ng-click="reloadCard()"></span> <span class="deckster-card-control glyphicon" ng-class="{\'glyphicon-resize-full\': !expanded, \'glyphicon-resize-small\': expanded}" ng-click="expandCard(); toggleView()"></span> <a class="deckster-card-control thin glyphicon glyphicon-new-window" ng-href="{{card.getPopoutUrl()}}" ng-if="hasPopout()"></a></div></div><div class="deckster-content"><div class="deckster-summary" ng-show="currentView === \'summary\'"></div><div class="deckster-detail" ng-show="currentView === \'details\'"></div></div></div>');
 }]);
 })();
 
@@ -352,5 +406,17 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/deckster-deck/deck.html',
     '<div class="deckster-deck"><div class="deckster-deck-content" gridster="deckOptions.gridsterOpts"><div class="deckster-card" gridster-item="cardConfigMap" ng-repeat="card in cardList"><deckster-card card-item="card"></deckster-card></div></div></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('angularDeckster.templates');
+} catch (e) {
+  module = angular.module('angularDeckster.templates', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/deckster-popout/popout.html',
+    '<div class="deckster-popout-wrapper"><deckster-popout></deckster-popout></div>');
 }]);
 })();

@@ -3,7 +3,8 @@ angular.module('angularDeckster.services')
   var defaultConfig = {
     lazyLoad: true,
     summaryTemplateUrl: '/deckster-card/default-summary.html',
-    detailTemplateUrl: '/deckster-card/default-detail.html'
+    detailTemplateUrl: '/deckster-card/default-detail.html',
+    popoutTemplateUrl: '/deckster-card/default-detail.html'
   };
 
   var fetchPromises = {};  // Promises for content templates
@@ -37,6 +38,16 @@ angular.module('angularDeckster.services')
     });
   };
 
+  /**
+   * Function that returns the html for the popout section of the card
+   * @param cb
+   */
+  Card.prototype.getPopoutContent = function(cb) {
+    fetchTemplate(this.popoutTemplateUrl).then(function(template) {
+      cb && cb(template);
+    });
+  };
+
   Card.prototype.isLazy = function() {
     return this.lazyLoad;
   };
@@ -47,6 +58,10 @@ angular.module('angularDeckster.services')
    */
   Card.prototype.getTitle = function() {
     return this.title || this.id || '';
+  };
+
+  Card.prototype.getPopoutUrl = function() {
+    return '#/deckster/card/' + this.id;
   };
 
   /**

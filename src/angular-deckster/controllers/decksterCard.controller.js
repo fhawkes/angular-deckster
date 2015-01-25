@@ -1,5 +1,5 @@
 angular.module('angularDeckster.controllers')
-.controller('decksterCardCtrl', ['$scope', '$compile', '$window', function($scope, $compile, $window) {
+.controller('decksterCardCtrl', ['$scope', '$compile', '$window', 'decksterConfig', function($scope, $compile, $window, decksterConfig) {
   var cardEl = null;
   var summaryLoaded = false;
   var detailsLoaded = false;
@@ -34,6 +34,10 @@ angular.module('angularDeckster.controllers')
 
   $scope.currentDate = function() {
     return Date.now();
+  };
+
+  $scope.hasPopout = function() {
+    return self.hasPopout();
   };
 
   $scope.$on('deckster.cards.refresh', function() {
@@ -104,8 +108,8 @@ angular.module('angularDeckster.controllers')
     $scope.expanded = false;
   };
 
-  self.popoutCard = function() {
-    // TODO implement popout functionality
+  self.hasPopout = function() {
+    return angular.isDefined(decksterConfig.popoutTemplates[$scope.card.id]);
   };
 
   self.reloadCard = function() {
