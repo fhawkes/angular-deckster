@@ -35,6 +35,7 @@ Which expects a scope setup like the following:
     $scope.cards = [
       {
         title: 'Alerts', // Title of the card
+        id: 'alertsCard', // This is a unique id required to make popouts work
         size: {x: 1, y: 3}, // Size of the card x being the number columns in deck and y being the number of rows in the deck
         position: [0, 0] // The position of the card in the deck [row, column]
       },
@@ -75,6 +76,51 @@ Which expects a scope setup like the following:
       }
     ];
 ```
+
+##Using the Popout feature
+
+The Popout feature allows you to pop a particular card out in a new tab to view its content. This also allows the card
+to be visited via the url `/deckster/card/:cardId`.
+
+There are two steps you need to take to ensure the cards ability to popout.
+
+1. Ensure the id and popoutTemplateUrl parameters are set in the card config:
+``` javascript
+  $scope.cards = [
+    {
+      title: 'Alerts',
+      id: 'alertsCard', // This is a unique id required to make popouts work
+      popoutTemplateUrl: 'alertsCardDetail.html', // This is a url to the popout template for this card.
+      size: {x: 1, y: 3},
+      position: [0, 0]
+    }
+  ];
+```
+
+2. Add the cards popoutTemplate config to the decksterConfig during the configuration of your app.
+
+In order to do this you must inject the decksterConfigProvider into your app configuration and add the cards id and
+popoutTemplateUrl to the popoutTemplates object.
+
+``` javascript
+
+  angular.module('decksterTestApp', ['ngRoute', 'angularDeckster'])
+  .config(['$routeProvider', 'decksterConfigProvider', function($routeProvider, decksterConfigProvider) {
+    $routeProvider.when('/', {
+      templateUrl: 'partials/main.html',
+      controller: 'TestController'
+    });
+
+    decksterConfigProvider.set({
+      popoutTemplates: {
+        'alertsCard': 'testDetailsTemplate.html'
+      }
+    })
+  }]);
+```
+
+*`Note` in order to make use of this feature your app must use ngRoute for its view routing*
+
 
 ##Installation
         bower install --save angular-deckster
