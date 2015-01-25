@@ -6,63 +6,90 @@ app = angular.module('decksterTestApp', ['ngRoute', 'angularDeckster'])
   });
 
   decksterConfigProvider.set({
-    popoutTemplates: {
-      'alertsCard': 'testDetailsTemplate.html'
+    decks: {
+      'testDeck': {
+        cards: [
+          {
+            title: 'Charts',
+            id: 'chartCard',
+            size: {x: 1, y: 3},
+            position: [0, 0]
+          },
+          {
+            title: 'Alerts',
+            id: 'alertsCard',
+            size: {x: 1, y: 3},
+            position: [3, 0]
+          },
+          {
+            title: 'Geospatial',
+            id: 'mapCard',
+            size: {x: 2, y: 4},
+            position: [0, 2]
+          },
+          {
+            title: 'Table Data',
+            id: 'tableCard',
+            size: {x: 1, y: 6},
+            position: [0, 1]
+          },
+          {
+            title: 'Timeline',
+            id: 'timelineCard',
+            size: {x: 3, y: 2},
+            position: [4, 2]
+          },
+          {
+            title: 'Node Details',
+            id: 'nodeDetailsCard',
+            size: {x: 1, y: 4},
+            position: [0, 4]
+          }
+        ]
+      }
+    },
+    cardDefaults: {
+      'chartCard': {
+        summaryTemplateUrl: 'testSummaryTemplate.html',
+        detailTemplateUrl: 'testDetailsTemplate.html'
+      },
+      'alertsCard': {
+        summaryTemplateUrl: 'testSummaryTemplate.html',
+        detailTemplateUrl: 'testDetailsTemplate.html'
+      },
+      'mapCard': {
+        summaryTemplateUrl: 'testSummaryTemplate.html',
+        detailTemplateUrl: 'testDetailsTemplate.html'
+      },
+      'timelineCard': {
+        summaryTemplateUrl: 'testSummaryTemplate.html',
+        detailTemplateUrl: 'testDetailsTemplate.html'
+      },
+      'nodeDetailsCard': {
+        summaryTemplateUrl: 'testSummaryTemplate.html',
+        detailTemplateUrl: 'testDetailsTemplate.html'
+      },
+      'tableCard': {
+        summaryTemplateUrl: 'testSummaryTemplate.html',
+        detailTemplateUrl: 'testDetailsTemplate.html'
+      }
     }
   })
 }]);
 
-app.controller('TestController', ['$scope', function($scope) {
+app.controller('TestController', ['$scope', 'decksterService', function($scope, decksterService) {
   $scope.testDeckOptions = {
+    id: 'testDeck',
     gridsterOpts: {
       columns: 5,
       rowHeight: 150,
       margins: [10, 10]
     }
   };
-  $scope.cards = [
-    {
-      title: 'Alerts',
-      id: 'alertsCard',
-      summaryTemplateUrl: 'testSummaryTemplate.html',
-      detailsTemplateUrl: 'testDetailsTemplate.html',
-      size: {x: 1, y: 3},
-      position: [0, 0]
-    },
-    {
-      title: 'Events',
-      size: {x: 1, y: 3},
-      position: [3, 0]
-    },
-    {
-      title: 'Link Analysis',
-      size: {x: 2, y: 4},
-      position: [0, 2]
-    },
-    {
-      title: 'Node Details',
-      size: {x: 1, y: 4},
-      position: [0, 4]
-    },
-    {
-      title: 'Timeline',
-      size: {x: 3, y: 2},
-      position: [4, 2]
-    },
-    {
-      title: 'Network Health',
-      size: {x: 1, y: 2},
-      position: [2, 1]
-    },
-    {
-      title: 'Geospatial',
-      size: {x: 1, y: 2},
-      position: [4, 1]
-    },
-    {
-      title: 'Query Builder',
-      size: {x: 1, y: 2},
-      position: [0, 1]
-    }
-  ];
+
+  $scope.cards = [];
+
+  // Setup the cards for this deck
+  decksterService.buildCards('testDeck', $scope.cards);
+
 }]);

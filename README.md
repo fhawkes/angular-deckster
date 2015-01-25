@@ -19,62 +19,85 @@ Here is an example of the default usage:
 ```html
   <deckster-deck deck-cards="cards" deck-options="deckOptions"></deckster-deck>
 ```
+Configure decks and card defaults using the decksterConfigProvider during the config stage of your app.
+
+Your decksterConfig will contain a decks object which contains configurations for the different decks you plan to use and a cardDefaults object which contains preconfigured defaults for each card.
+
+*`Keep in mind` you can create card defaults that can be used by multiple decks they are just the default values. If you plan on using the same templates in multiple decks then you can reuse the same card defaults.
+
+Here is an example setup of an app using angular-deckster:
+``` javascript
+var app = angular.module('decksterTestApp', ['ngRoute', 'angularDeckster'])
+  .config(['$routeProvider', 'decksterConfigProvider', function($routeProvider, decksterConfigProvider) {
+    $routeProvider.when('/', {
+      templateUrl: 'partials/main.html',
+      controller: 'TestController'
+    });
+
+
+  decksterConfigProvider.set({
+    decks: {
+      'testDeck': {
+        cards: [
+          {
+            title: 'Card 1',
+            id: 'card-1',
+            size: {x: 1, y: 1},
+            position: [0, 0]
+          },
+          {
+            title: 'Card 2',
+            id: 'card-2',
+            size: {x: 1, y: 1},
+            position: [0, 1]
+          },
+          {
+            title: 'Card 3',
+            id: 'card-3',
+            size: {x: 1, y: 1},
+            position: [0, 2]
+          }
+        ]
+      }
+    },
+    cardDefaults: {
+      'card-1': {
+        summaryTemplateUrl: 'card1SummaryTemplate.html',
+        detailTemplateUrl: 'card1DetailsTemplate.html' // Required for popout feature to work
+      },
+      'card-2': {
+        summaryTemplateUrl: 'card2testSummaryTemplate.html',
+        detailTemplateUrl: 'card2DetailsTemplate.html'
+      },
+      'card-3': {
+        summaryTemplateUrl: 'card3SummaryTemplate.html',
+        detailTemplateUrl: 'card3DetailsTemplate.html'
+      }
+    })
+  }]);
+```
 
 Which expects a scope setup like the following:
 
 ``` javascript
+app.controller('TestController', ['$scope', 'decksterService', function($scope, decksterService) {
+  // Deck options you intend to bind to the deck-options attribute
+  $scope.deckOptions = {
+    id: 'testDeck',
+    gridsterOpts: { // any options that you can set for angular-gridster (see:  http://manifestwebdesign.github.io/angular-gridster/)
+      columns: 5,
+      rowHeight: 150,
+      margins: [10, 10]
+    }
+  };
 
-    $scope.deckOptions = {
-      gridsterOpts: { // any options that you can set for angular-gridster (see:  http://manifestwebdesign.github.io/angular-gridster/)
-        columns: 5,
-        rowHeight: 150,
-        margins: [10, 10]
-      }
-    };
+  // Array that you intend to bind to the deck-cards attribute
+  $scope.cards = [];
 
-    $scope.cards = [
-      {
-        title: 'Alerts', // Title of the card
-        id: 'alertsCard', // This is a unique id required to make popouts work
-        size: {x: 1, y: 3}, // Size of the card x being the number columns in deck and y being the number of rows in the deck
-        position: [0, 0] // The position of the card in the deck [row, column]
-      },
-      {
-        title: 'Events',
-        size: {x: 1, y: 3},
-        position: [3, 0]
-      },
-      {
-        title: 'Link Analysis',
-        size: {x: 2, y: 4},
-        position: [0, 2]
-      },
-      {
-        title: 'Node Details',
-        size: {x: 1, y: 4},
-        position: [0, 4]
-      },
-      {
-        title: 'Timeline',
-        size: {x: 3, y: 2},
-        position: [4, 2]
-      },
-      {
-        title: 'Network Health',
-        size: {x: 1, y: 2},
-        position: [2, 1]
-      },
-      {
-        title: 'Geospatial',
-        size: {x: 1, y: 2},
-        position: [4, 1]
-      },
-      {
-        title: 'Query Builder',
-        size: {x: 1, y: 2},
-        position: [0, 1]
-      }
-    ];
+  // Setup the cards for this deck
+  decksterService.buildCards('testDeck', $scope.cards);
+
+}]);
 ```
 
 ##Using the Popout feature
@@ -82,41 +105,7 @@ Which expects a scope setup like the following:
 The Popout feature allows you to pop a particular card out in a new tab to view its content. This also allows the card
 to be visited via the url `/deckster/card/:cardId`.
 
-There are two steps you need to take to ensure the cards ability to popout.
-
-1. Ensure the id and popoutTemplateUrl parameters are set in the card config:
-``` javascript
-  $scope.cards = [
-    {
-      title: 'Alerts',
-      id: 'alertsCard', // This is a unique id required to make popouts work
-      popoutTemplateUrl: 'alertsCardDetail.html', // This is a url to the popout template for this card.
-      size: {x: 1, y: 3},
-      position: [0, 0]
-    }
-  ];
-```
-2. Add the cards popoutTemplate config to the decksterConfig during the configuration of your app.
-
-In order to do this you must inject the decksterConfigProvider into your app configuration and add the cards id and
-popoutTemplateUrl to the popoutTemplates object.
-
-``` javascript
-
-  angular.module('decksterTestApp', ['ngRoute', 'angularDeckster'])
-  .config(['$routeProvider', 'decksterConfigProvider', function($routeProvider, decksterConfigProvider) {
-    $routeProvider.when('/', {
-      templateUrl: 'partials/main.html',
-      controller: 'TestController'
-    });
-
-    decksterConfigProvider.set({
-      popoutTemplates: {
-        'alertsCard': 'testDetailsTemplate.html'
-      }
-    })
-  }]);
-```
+To use the popout feature for a particular card you must ensure that the detailTemplateUrl is properly set in the card default configuration.
 
 *`Note` in order to make use of this feature your app must use ngRoute for its view routing*
 

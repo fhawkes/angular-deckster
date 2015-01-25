@@ -163,7 +163,7 @@ angular.module('angularDeckster.controllers')
   };
 
   self.hasPopout = function() {
-    return angular.isDefined(decksterConfig.popoutTemplates[$scope.card.id]);
+    return angular.isDefined(decksterConfig.cardDefaults[$scope.card.id] && decksterConfig.cardDefaults[$scope.card.id].detailTemplateUrl);
   };
 
   self.reloadCard = function() {
@@ -190,16 +190,11 @@ angular.module('angularDeckster.controllers')
       return new Card(card);
     });
   };
-
-  this.reloadCards = function() {
-    $scope.$broadcast('deckster.cards.refresh');
-  };
-
 }]);
 angular.module('angularDeckster.controllers')
 .controller('decksterPopoutCtrl', ['decksterConfig', function(decksterConfig) {
   this.getTemplateUrl = function(cardId) {
-    return decksterConfig.popoutTemplates[cardId];
+    return decksterConfig.cardDefaults[cardId].detailTemplateUrl;
   };
 }]);
 angular.module('angularDeckster.directives')
@@ -207,19 +202,23 @@ angular.module('angularDeckster.directives')
   return {
     restrict: 'EA',
     replace: true,
-    require: ['^decksterDeck', '^gridster', 'decksterCard'],
+    require: ['^gridster', 'decksterCard'],
     controller: 'decksterCardCtrl',
     templateUrl: '/deckster-card/card.html',
     scope: {
       card: '=cardItem'
     },
     link: function(scope, element, attrs, ctrls) {
-      var decksterDeckCtrl =  ctrls[0];
-      var decksterCardCtrl = ctrls[2];
+      var decksterCardCtrl = ctrls[1];
 
-      scope.gridsterConfig = ctrls[1];
+      scope.gridsterConfig = ctrls[0];
 
       decksterCardCtrl.setCard(element);
+
+      // Listen for deck refresh
+      scope.$on('deckster.deck.reload.' + scope.card.deckId, function() {
+        decksterCardCtrl.reloadCard();
+      });
     }
   };
 });
@@ -361,18 +360,33 @@ angular.module('angularDeckster.services')
 
   return Card;
 }]);
-(function(module) {
-try {
-  module = angular.module('angularDeckster.templates');
-} catch (e) {
-  module = angular.module('angularDeckster.templates', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/deckster-deck/deck.html',
-    '<div class="deckster-deck"><div class="deckster-deck-content" gridster="deckOptions.gridsterOpts"><div class="deckster-card" gridster-item="cardConfigMap" ng-repeat="card in cardList"><deckster-card card-item="card"></deckster-card></div></div></div>');
-}]);
-})();
+angular.module('angularDeckster.services')
+.factory('decksterService', ['decksterConfig', '$rootScope', function(decksterConfig, $rootScope) {
+  return {
 
+    /**
+     * Function used to initialized array of cards for a deck
+     * @param deckId
+     * @param cards $scope variable that is an array of cards to be filled
+     */
+    buildCards: function(deckId, cards) {
+      angular.forEach(decksterConfig.decks[deckId].cards, function(card) {
+        card.deckId = deckId;
+
+        // Get card defaults and merge with deck card configs
+        cards.push(angular.extend({}, decksterConfig.cardDefaults[card.id], card));
+      });
+    },
+
+    /**
+     * Broadcasts reload event for deck specified by deckId
+     * @param deckId
+     */
+    reloadDeck: function(deckId) {
+      $rootScope.$broadcast('deckster.deck.reload.' + deckId);
+    }
+  };
+}]);
 (function(module) {
 try {
   module = angular.module('angularDeckster.templates');
@@ -393,7 +407,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/deckster-card/default-detail.html',
-    '<div>This is the detail view of your deckster card. To add your own content set the detailTemplateUrl option in the card options.</div><div>Content loaded: {{currentDate() | date: \'medium\'}}</div>');
+    '<div>This is the detail view of your deckster card. To add your own content set the detailTemplateUrl option in the card options.</div>');
 }]);
 })();
 
@@ -405,7 +419,19 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/deckster-card/default-summary.html',
-    '<div>This is the summary view of your deckster card. To add your own content set the summaryTemplateUrl option in the card options.</div><div>Content loaded: {{currentDate() | date: \'medium\'}}</div>');
+    '<div>This is the summary view of your deckster card. To add your own content set the summaryTemplateUrl option in the card options.</div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('angularDeckster.templates');
+} catch (e) {
+  module = angular.module('angularDeckster.templates', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/deckster-deck/deck.html',
+    '<div class="deckster-deck"><div class="deckster-deck-content" gridster="deckOptions.gridsterOpts"><div class="deckster-card" gridster-item="cardConfigMap" ng-repeat="card in cardList"><deckster-card card-item="card"></deckster-card></div></div></div>');
 }]);
 })();
 

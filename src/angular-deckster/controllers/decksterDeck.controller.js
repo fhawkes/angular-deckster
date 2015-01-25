@@ -17,9 +17,4 @@ angular.module('angularDeckster.controllers')
       return new Card(card);
     });
   };
-
-  this.reloadCards = function() {
-    $scope.$broadcast('deckster.cards.refresh');
-  };
-
 }]);

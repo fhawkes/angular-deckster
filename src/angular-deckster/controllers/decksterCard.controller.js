@@ -109,7 +109,7 @@ angular.module('angularDeckster.controllers')
   };
 
   self.hasPopout = function() {
-    return angular.isDefined(decksterConfig.popoutTemplates[$scope.card.id]);
+    return angular.isDefined(decksterConfig.cardDefaults[$scope.card.id] && decksterConfig.cardDefaults[$scope.card.id].detailTemplateUrl);
   };
 
   self.reloadCard = function() {
