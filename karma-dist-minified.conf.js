@@ -25,8 +25,6 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'bower/angular/angular.js',
-      'bower/angular-resource/angular-resource.js',
-      'bower/angular-sanitize/angular-sanitize.js',
       'bower/angular-mocks/angular-mocks.js',
        'bower/angular-gridster/src/angular-gridster.js',
   'dist/angular-deckster.min.js',
