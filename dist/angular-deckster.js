@@ -289,7 +289,7 @@ angular.module('angularDeckster.services')
   };
 
   Card.prototype.updateCardConfig = function(config) {
-    $.extend(true, this, defaultConfig, config);
+    angular.extend(this, defaultConfig, config);
   };
 
   /**

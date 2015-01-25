@@ -1,7 +1,7 @@
-app = angular.module('decksterTestApp', ['ngRoute', 'angularDeckster'])
+app = angular.module('decksterTestApp', ['ngRoute', 'angularDeckster', 'decksterTestApp.templates'])
 .config(['$routeProvider', 'decksterConfigProvider', function($routeProvider, decksterConfigProvider) {
   $routeProvider.when('/', {
-    templateUrl: 'partials/main.html',
+    templateUrl: '/main.html',
     controller: 'TestController'
   });
 

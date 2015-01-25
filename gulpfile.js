@@ -64,6 +64,24 @@ gulp.task('html2js', function(cb) {
     })
 });
 
+gulp.task('appHtml2js', function(cb) {
+  gulp.src('./app/partials/**/*.html')
+  .pipe(plumber())
+  .pipe(minifyHtml({
+    empty: true,
+    spare: true,
+    quotes: true
+  }))
+  .pipe(ngHtml2Js({
+    prefix: '/',
+    moduleName: 'decksterTestApp.templates'
+  }))
+  .pipe(concat('app-templates.js'))
+  .pipe(gulp.dest('./app/scripts')).on('end', function() {
+    cb && cb();
+  })
+});
+
 gulp.task('sass', function () {
   sass(path.join(sourceDirectory, '/angular-deckster/styles/angularDeckster.scss'), { style: 'expanded' })
   .pipe(plumber())
