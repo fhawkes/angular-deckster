@@ -96,7 +96,6 @@ There are two steps you need to take to ensure the cards ability to popout.
     }
   ];
 ```
-
 2. Add the cards popoutTemplate config to the decksterConfig during the configuration of your app.
 
 In order to do this you must inject the decksterConfigProvider into your app configuration and add the cards id and
