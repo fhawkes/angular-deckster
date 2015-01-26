@@ -21,16 +21,30 @@
         'angularDeckster.services',
         'angularDeckster.controllers',
         'angularDeckster.config',
-        'gridster',
-        'ngRoute'
+        'gridster'
     ]);
 
-  // Routes
-  deckster.config(['$routeProvider', function($routeProvider) {
-    $routeProvider
+  // Route support for
+  deckster.config(['$injector', function($injector) {
+    // Add routes for ui-router or ngRoute
+    if($injector.has('$stateProvider')) {
+      var $stateProvider = $injector.get('$stateProvider');
+
+      $stateProvider
+      .state('deckster-card', {
+        url: '/deckster/card/:cardId',
+        templateUrl: '/deckster-popout/popout.html'
+      });
+
+    } else if($injector.has('$routeProvider')) {
+      var $routeProvider = $injector.get('$routeProvider');
+
+      $routeProvider
       .when('/deckster/card/:cardId', {
         templateUrl: '/deckster-popout/popout.html'
       });
+    }
+
   }]);
 
   //Config

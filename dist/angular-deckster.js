@@ -21,16 +21,30 @@
         'angularDeckster.services',
         'angularDeckster.controllers',
         'angularDeckster.config',
-        'gridster',
-        'ngRoute'
+        'gridster'
     ]);
 
-  // Routes
-  deckster.config(['$routeProvider', function($routeProvider) {
-    $routeProvider
+  // Route support for
+  deckster.config(['$injector', function($injector) {
+    // Add routes for ui-router or ngRoute
+    if($injector.has('$stateProvider')) {
+      var $stateProvider = $injector.get('$stateProvider');
+
+      $stateProvider
+      .state('deckster-card', {
+        url: '/deckster/card/:cardId',
+        templateUrl: '/deckster-popout/popout.html'
+      });
+
+    } else if($injector.has('$routeProvider')) {
+      var $routeProvider = $injector.get('$routeProvider');
+
+      $routeProvider
       .when('/deckster/card/:cardId', {
         templateUrl: '/deckster-popout/popout.html'
       });
+    }
+
   }]);
 
   //Config
@@ -197,81 +211,6 @@ angular.module('angularDeckster.controllers')
     return decksterConfig.cardDefaults[cardId].detailTemplateUrl;
   };
 }]);
-angular.module('angularDeckster.directives')
-.directive('decksterCard', function() {
-  return {
-    restrict: 'EA',
-    replace: true,
-    require: ['^gridster', 'decksterCard'],
-    controller: 'decksterCardCtrl',
-    templateUrl: '/deckster-card/card.html',
-    scope: {
-      card: '=cardItem'
-    },
-    link: function(scope, element, attrs, ctrls) {
-      var decksterCardCtrl = ctrls[1];
-
-      scope.gridsterConfig = ctrls[0];
-
-      decksterCardCtrl.setCard(element);
-
-      // Listen for deck refresh
-      scope.$on('deckster.deck.reload.' + scope.card.deckId, function() {
-        decksterCardCtrl.reloadCard();
-      });
-    }
-  };
-});
-angular.module('angularDeckster.directives')
-.directive('decksterDeck', ['$rootScope', '$parse', function($rootScope, $parse) {
-  var options = {
-    gridsterOpts: {
-      columns: 5,
-      margins: [10, 10],
-      rowHeight: 150,
-      draggable: {
-        handle: '.deckster-card-header'
-      }
-    }
-  };
-
-  return {
-    replace: true,
-    scope: true,
-    templateUrl: '/deckster-deck/deck.html',
-    controller: 'decksterDeckCtrl',
-    link: function(scope, element, attrs, decksterDeckCtrl) {
-
-      scope.deckOptions = angular.extend({}, options, $parse(attrs.deckOptions || {})(scope));
-
-      attrs.$observe('deckCards', function(value) {
-        var cards = $parse(value || [])(scope);
-        decksterDeckCtrl.initCards(cards);
-      });
-    }
-  };
-}]);
-angular.module('angularDeckster.directives')
-.directive('decksterPopout', ['$routeParams', '$compile', 'Card', function($routeParams, $compile, Card) {
-  return {
-    replace: true,
-    controller: 'decksterPopoutCtrl',
-    template: '<div class="deckster-popout-content"></div>',
-    link: function(scope, element, attrs, decksterPopoutCtrl) {
-      var cardId = $routeParams.cardId;
-
-      if(cardId) {
-        var templateUrl = decksterPopoutCtrl.getTemplateUrl(cardId);
-        var card = new Card({popoutTemplateUrl: templateUrl});
-
-        card.getPopoutContent(function(template) {
-          element.html(template);
-          $compile(element.contents())(scope);
-        });
-      }
-    }
-  };
-}]);
 angular.module('angularDeckster.services')
 .factory('Card', ['$http', '$templateCache', '$q', function($http, $templateCache, $q) {
   var defaultConfig = {
@@ -384,6 +323,91 @@ angular.module('angularDeckster.services')
      */
     reloadDeck: function(deckId) {
       $rootScope.$broadcast('deckster.deck.reload.' + deckId);
+    }
+  };
+}]);
+angular.module('angularDeckster.directives')
+.directive('decksterCard', function() {
+  return {
+    restrict: 'EA',
+    replace: true,
+    require: ['^gridster', 'decksterCard'],
+    controller: 'decksterCardCtrl',
+    templateUrl: '/deckster-card/card.html',
+    scope: {
+      card: '=cardItem'
+    },
+    link: function(scope, element, attrs, ctrls) {
+      var decksterCardCtrl = ctrls[1];
+
+      scope.gridsterConfig = ctrls[0];
+
+      decksterCardCtrl.setCard(element);
+
+      // Listen for deck refresh
+      scope.$on('deckster.deck.reload.' + scope.card.deckId, function() {
+        decksterCardCtrl.reloadCard();
+      });
+    }
+  };
+});
+angular.module('angularDeckster.directives')
+.directive('decksterDeck', ['$rootScope', '$parse', function($rootScope, $parse) {
+  var options = {
+    gridsterOpts: {
+      columns: 5,
+      margins: [10, 10],
+      rowHeight: 150,
+      draggable: {
+        handle: '.deckster-card-header'
+      }
+    }
+  };
+
+  return {
+    replace: true,
+    scope: true,
+    templateUrl: '/deckster-deck/deck.html',
+    controller: 'decksterDeckCtrl',
+    link: function(scope, element, attrs, decksterDeckCtrl) {
+
+      scope.deckOptions = angular.extend({}, options, $parse(attrs.deckOptions || {})(scope));
+
+      attrs.$observe('deckCards', function(value) {
+        var cards = $parse(value || [])(scope);
+        decksterDeckCtrl.initCards(cards);
+      });
+    }
+  };
+}]);
+angular.module('angularDeckster.directives')
+.directive('decksterPopout', ['$injector', '$compile', 'Card', function($injector, $compile, Card) {
+  return {
+    replace: true,
+    controller: 'decksterPopoutCtrl',
+    template: '<div class="deckster-popout-content"></div>',
+    link: function(scope, element, attrs, decksterPopoutCtrl) {
+      var cardId;
+
+      if($injector.has('$stateParams')) {
+        var $stateParams = $injector.get('$stateParams');
+        cardId = $stateParams.cardId;
+
+      } else if($injector.has('$routeParams')) {
+        var $routeParams = $injector.get('$routeParams');
+        cardId = $routeParams.cardId;
+      }
+      
+
+      if(cardId) {
+        var templateUrl = decksterPopoutCtrl.getTemplateUrl(cardId);
+        var card = new Card({popoutTemplateUrl: templateUrl});
+
+        card.getPopoutContent(function(template) {
+          element.html(template);
+          $compile(element.contents())(scope);
+        });
+      }
     }
   };
 }]);
