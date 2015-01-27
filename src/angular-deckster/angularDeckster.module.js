@@ -29,18 +29,21 @@
     // Add routes for ui-router or ngRoute
     if($injector.has('$stateProvider')) {
       var $stateProvider = $injector.get('$stateProvider');
-
       $stateProvider
       .state('deckster-card', {
-        url: '/deckster/card/:cardId',
-        templateUrl: '/deckster-popout/popout.html'
+        url: '/deckster/card/:cardId/:view',
+        templateUrl: '/deckster-popout/popout.html',
+        params: {
+          cardId: {value: null, squash: true},
+          view: {value: 'details', squash: true}
+        }
       });
 
     } else if($injector.has('$routeProvider')) {
       var $routeProvider = $injector.get('$routeProvider');
 
       $routeProvider
-      .when('/deckster/card/:cardId', {
+      .when('/deckster/card/:cardId/:view?', {
         templateUrl: '/deckster-popout/popout.html'
       });
     }

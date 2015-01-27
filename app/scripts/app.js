@@ -1,9 +1,17 @@
-app = angular.module('decksterTestApp', ['ngRoute', 'angularDeckster', 'decksterTestApp.templates'])
+app = angular.module('decksterTestApp', ['ngRoute', 'angularDeckster', 'decksterTestApp.templates'])// change ngRoute to ui.router to use ui-router instead of ngRoute
 .config(['$routeProvider', 'decksterConfigProvider', function($routeProvider, decksterConfigProvider) {
   $routeProvider.when('/', {
     templateUrl: '/main.html',
     controller: 'TestController'
   });
+
+//  $stateProvider
+//  .state('main', {
+//    url: '/',
+//    templateUrl: '/main.html',
+//    controller: 'TestController'
+//  });
+
 
   decksterConfigProvider.set({
     decks: {

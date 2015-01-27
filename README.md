@@ -100,14 +100,19 @@ app.controller('TestController', ['$scope', 'decksterService', function($scope, 
 }]);
 ```
 
+##External Card Urls
+If the cardDefaults for the card is configured with a summaryTemplateUrl and a detailTemplateUrl the user will have the
+ability to visit the card at an external url of `/deckster/card/:cardId/:view` where the view parameter will default to `detail`.
+
+The options for view will be `summary` or `detail`.
+
 ##Using the Popout feature
 
-The Popout feature allows you to pop a particular card out in a new tab to view its content. This also allows the card
-to be visited via the url `/deckster/card/:cardId`.
+The Popout feature allows you to pop a particular card out in a new tab to view its detail content in a standalone webpage.
 
 To use the popout feature for a particular card you must ensure that the detailTemplateUrl is properly set in the card default configuration.
 
-*`Note` in order to make use of this feature your app must use ngRoute for its view routing*
+*`Note` in order to make use of this feature your app must use ngRoute or ui-router for its view routing*
 
 
 ##Installation
