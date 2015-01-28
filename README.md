@@ -23,7 +23,7 @@ Configure decks and card defaults using the decksterConfigProvider during the co
 
 Your decksterConfig will contain a decks object which contains configurations for the different decks you plan to use and a cardDefaults object which contains preconfigured defaults for each card.
 
-*`Keep in mind` you can create card defaults that can be used by multiple decks they are just the default values. If you plan on using the same templates in multiple decks then you can reuse the same card defaults.
+*`Keep in mind` you can create card defaults that can be used by multiple decks they are just the default values. If you plan on using the same templates in multiple decks then you can reuse the same card defaults.*
 
 Here is an example setup of an app using angular-deckster:
 ``` javascript
