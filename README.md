@@ -12,7 +12,7 @@ Goals of Angular Deckster:
 2  Give users the ability to drill down from a summary view of the data to a detailed view
 3. Provide users with prepackaged plugins for data visualizations that will reduce development time
 
-##Usage
+## Usage
 
 Here is an example of the default usage:
 
