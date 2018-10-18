@@ -100,13 +100,13 @@ app.controller('TestController', ['$scope', 'decksterService', function($scope, 
 }]);
 ```
 
-##External Card Urls
+## External Card Urls
 If the cardDefaults for the card is configured with a summaryTemplateUrl and a detailTemplateUrl the user will have the
 ability to visit the card at an external url of `/deckster/card/:cardId/:view` where the view parameter will default to `detail`.
 
 The options for view will be `summary` or `detail`.
 
-##Using the Popout feature
+## Using the Popout feature
 
 The Popout feature allows you to pop a particular card out in a new tab to view its detail content in a standalone webpage.
 
@@ -115,7 +115,7 @@ To use the popout feature for a particular card you must ensure that the detailT
 *`Note` in order to make use of this feature your app must use ngRoute or ui-router for its view routing*
 
 
-##Installation
+## Installation
         bower install --save angular-deckster
 
 Then, import the following in your HTML alongside `jQuery` and `angular`:
@@ -131,7 +131,7 @@ Then, import the following in your HTML alongside `jQuery` and `angular`:
 *`Note` If you include any of the other card-plugins there maybe additional dependencies required*
 
 
-##Contributing
+## Contributing
 
 If you are interested in contributing to the project here are some steps to help you get going:
 
@@ -156,5 +156,5 @@ To build the project
   gulp build
 ```
 
-####Style Guide
+#### Style Guide
 Please respect the formatting specified in .editorconfig
